@@ -727,6 +727,7 @@
       document.getElementById('inputSubgrupo').value = produto.subgrupo;
       document.getElementById('inputCategoria').value = produto.categoria;
       document.getElementById('inputUnidade').value = produto.un;
+      document.getElementById('inputPrecoDetalhes').value = produto.preco; // Add this line
       document.getElementById('modalDetalhes').style.display = 'block';
     } else {
       alert('Selecione um produto para alterar.');
@@ -749,6 +750,7 @@
       produto.subgrupo = document.getElementById('inputSubgrupo').value;
       produto.categoria = document.getElementById('inputCategoria').value;
       produto.un = document.getElementById('inputUnidade').value;
+      produto.preco = document.getElementById('inputPrecoDetalhes').value; // Add this line
       fecharModal();
       renderizarTabela();
       alert('Alterações salvas com sucesso!');
