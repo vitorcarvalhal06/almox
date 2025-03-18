@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    .toolbar, .filters, .table-container, .details {
+      margin: 10px;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .toolbar button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-right: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .toolbar button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+      color: #333;
+    }
+    .filters select, .filters input, .details input {
+      margin: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .filters select:focus, .filters input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    .filters button {
+      grid-column: span 2;
+      align-self: center;
+      justify-self: center;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .filters button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .selected {
+      background-color: #cce5ff;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+    .pagination span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-content form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .modal-content form label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+      color: #333;
+    }
+    .modal-content form input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      text-transform: uppercase;
+    }
+    .modal-content form input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    .modal-content form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .modal-content form button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .modal-content button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .modal-content button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+    .dark-mode .toolbar, .dark-mode .filters, .dark-mode .table-container, .dark-mode .details {
+      background: #1e1e1e;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+    .dark-mode table, .dark-mode th, .dark-mode td {
+      border-color: #444;
+      color: #ffffff;
+    }
+    .dark-mode .selected {
+      background-color: #0056b3;
+    }
+    .dark-mode .modal-content {
+      background-color: #2e2e2e;
+      border-color: #555;
+      color: #ffffff;
+    }
+    .dark-mode .modal-content label {
+      color: #ffffff;
+    }
+    .dark-mode .filters label {
+      color: #ffffff;
+    }
+    .dark-mode .close {
+      color: #ccc;
+    }
+    .dark-mode .close:hover,
+    .dark-mode .close:focus {
+      color: #fff;
+    }
+    .dark-mode button {
+      background-color: #444;
+      color: #fff;
+    }
+    .dark-mode button:hover {
+      background-color: #666;
+    }
+    .dark-mode input, .dark-mode select {
+      background-color: #333;
+      color: #fff;
+      border-color: #555;
+    }
+    .dark-mode input:focus, .dark-mode select:focus {
+      border-color: #888;
+      box-shadow: 0 0 5px rgba(136, 136, 136, 0.5);
+    }
+    .dark-mode .pagination button {
+      background-color: #444;
+      color: #fff;
+    }
+    .dark-mode .pagination button:hover {
+      background-color: #666;
+    }
+    .dark-mode-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #333;
+      transition: color 0.3s;
+    }
+    .dark-mode-toggle:hover {
+      color: #000;
+    }
+    .pagination button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+      margin: 0 5px;
+    }
+    .pagination button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .history-modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .history-modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .history-modal-content table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .history-modal-content th, .history-modal-content td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    .history-modal-content .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .history-modal-content .close:hover,
+    .history-modal-content .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+<div class="toolbar">
+  <button onclick="limparBusca()">Limpar Filtros</button>
+  <button onclick="exportarExcel()">Exportar para Excel</button>
+  <button onclick="importarExcel()">Importar Excel</button>
+  <button onclick="alterarProduto()">Alterar</button>
+  <button onclick="abrirModalAdicionar()">Adicionar Produto</button>
+  <button onclick="abrirModalExcluir()">Excluir Produto</button>
+  <button onclick="abrirModalHistorico()">Histórico de Alterações</button>
+</div>
+
+<div class="filters">
+  <label>Marca:
+    <select><option>&lt;Todos&gt;</option></select>
+  </label>
+  <label>Tipo:
+    <select><option>&lt;Todos&gt;</option></select>
+  </label>
+  <label>Situação:
+    <select>
+      <option>Ativos</option>
+      <option>Inativos</option>
+    </select>
+  </label>
+  <label>Cód. Fabricante / Descrição:
+    <input type="text" id="inputBusca" placeholder="Digite o código ou descrição">
+  </label>
+  <label>Preço:
+    <input type="number" id="inputPrecoMin" placeholder="Min">
+    <input type="number" id="inputPrecoMax" placeholder="Max">
+  </label>
+  <label>Disponível:
+    <input type="number" id="inputDisponivelMin" placeholder="Min">
+    <input type="number" id="inputDisponivelMax" placeholder="Max">
+  </label>
+  <button onclick="limparResultados()">Limpar Resultados</button>
+  <button onclick="pesquisar()">Pesquisar</button>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>COD BARRA</th>
+        <th>COD FABRIC</th>
+        <th>COD AUXILIAR</th>
+        <th>DESCRIÇÃO</th>
+        <th>UN</th>
+        <th>DISPONÍVEL</th>
+        <th>R$</th>
+        <th>GRUPO</th>
+        <th>SUBGRUPO</th>
+        <th>CATEGORIA</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-produtos">
+      <!-- Itens aparecem aqui após busca -->
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <button onclick="paginaAnterior()">Anterior</button>
+  <span id="paginaAtual">1</span> de <span id="totalPaginas">1</span>
+  <button onclick="proximaPagina()">Próxima</button>
+</div>
+
+<div class="details">
+  <label>Disponível: <input type="number" id="inputDisponivel" value="0"></label>
+  <button onclick="aplicarAlteracao()">Aplicar Alterações</button>
+</div>
+
+<div id="modalDetalhes" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">&times;</span>
+    <h2>Detalhes do Produto</h2>
+    <form>
+      <label>Nome: <input type="text" id="inputNome"></label>
+      <label>Quantidade: <input type="number" id="inputQuantidade"></label>
+      <label>Grupo: <input type="text" id="inputGrupo"></label>
+      <label>Subgrupo: <input type="text" id="inputSubgrupo"></label>
+      <label>Categoria: <input type="text" id="inputCategoria"></label>
+      <label>Unidade:
+        <select id="inputUnidade">
+          <option value="UN">UN</option>
+          <option value="KG">KG</option>
+          <option value="GR">GR</option>
+          <option value="FT">FT</option>
+          <option value="CM">CM</option>
+          <option value="M">M</option>
+          <option value="LT">LT</option>
+          <option value="M2">M2</option>
+        </select>
+      </label>
+      <label>Preço:
+        <select id="inputPrecoDetalhes">
+          <option value="R$">R$</option>
+          <option value="US$">US$</option>
+          <option value="€">€</option>
+        </select>
+      </label>
+      <button type="button" onclick="salvarAlteracoes()">Salvar Alterações</button>
+    </form>
+  </div>
+</div>
+
+<div id="modalAdicionar" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModalAdicionar()">&times;</span>
+    <h2>Adicionar Produto</h2>
+    <form>
+      <label>Cod Barra: <input type="text" id="inputCodBarra"></label>
+      <label>Cod Fabricante: <input type="text" id="inputCodFabric"></label>
+      <label>Cod Auxiliar: <input type="text" id="inputCodAuxiliar"></label>
+      <label>Descrição: <input type="text" id="inputDescricao"></label>
+      <label>Unidade:
+        <select id="inputUnidadeAdicionar">
+          <option value="UN">UN</option>
+          <option value="KG">KG</option>
+          <option value="GR">GR</option>
+          <option value="FT">FT</option>
+          <option value="CM">CM</option>
+          <option value="M">M</option>
+          <option value="LT">LT</option>
+          <option value="M2">M2</option>
+        </select>
+      </label>
+      <label>Disponível: <input type="text" id="inputDisponivelAdicionar"></label>
+      <label>Preço:
+        <select id="inputPreco">
+          <option value="R$">R$</option>
+          <option value="US$">US$</option>
+          <option value="€">€</option>
+        </select>
+      </label>
+      <label>Grupo: <input type="text" id="inputGrupoAdicionar"></label>
+      <label>Subgrupo: <input type="text" id="inputSubgrupoAdicionar"></label>
+      <label>Categoria: <input type="text" id="inputCategoriaAdicionar"></label>
+      <button type="button" onclick="adicionarProduto()">Adicionar</button>
+    </form>
+  </div>
+</div>
+
+<div id="modalExcluir" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModalExcluir()">&times;</span>
+    <h2>Excluir Produto</h2>
+    <p>Tem certeza que deseja excluir este produto?</p>
+    <button onclick="confirmarExclusao()">Sim</button>
+    <button onclick="fecharModalExcluir()">Não</button>
+  </div>
+</div>
+
+<div id="modalHistorico" class="history-modal">
+  <div class="history-modal-content">
+    <span class="close" onclick="fecharModalHistorico()">&times;</span>
+    <h2>Histórico de Alterações</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>Alteração</th>
+          <th>Data</th>
+          <th>Hora</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-historico">
+        <!-- Histórico de alterações aparece aqui -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const produtos = [];
+  let produtosSelecionados = [];
+  let produtosFiltrados = [...produtos];
+  let pagina = 1;
+  const itensPorPagina = 10;
+  const historicoAlteracoes = [];
+
+  document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'a') {
+      event.preventDefault();
+      selecionarTodosProdutos();
+    }
+  });
+
+  function selecionarTodosProdutos() {
+    produtosSelecionados = [...produtosFiltrados];
+    document.querySelectorAll('.table-container tr').forEach(linha => linha.classList.add('selected'));
+  }
+
+  function pesquisar() {
+    const valorBusca = document.getElementById('inputBusca').value.trim().toUpperCase();
+    const precoMin = parseFloat(document.getElementById('inputPrecoMin').value);
+    const precoMax = parseFloat(document.getElementById('inputPrecoMax').value);
+    const disponivelMin = parseInt(document.getElementById('inputDisponivelMin').value, 10);
+    const disponivelMax = parseInt(document.getElementById('inputDisponivelMax').value, 10);
+
+    produtosFiltrados = produtos.filter(produto =>
+      (produto.codFabric.includes(valorBusca) || produto.descricao.toUpperCase().includes(valorBusca)) &&
+      (isNaN(precoMin) || parseFloat(produto.preco) >= precoMin) &&
+      (isNaN(precoMax) || parseFloat(produto.preco) <= precoMax) &&
+      (isNaN(disponivelMin) || produto.disponivel >= disponivelMin) &&
+      (isNaN(disponivelMax) || produto.disponivel <= disponivelMax)
+    );
+
+    pagina = 1;
+    renderizarTabela();
+  }
+
+  function renderizarTabela() {
+    const tabela = document.getElementById('tabela-produtos');
+    tabela.innerHTML = '';
+    const inicio = (pagina - 1) * itensPorPagina;
+    const fim = inicio + itensPorPagina;
+    const paginaProdutos = produtosFiltrados.slice(inicio, fim);
+
+    if (paginaProdutos.length === 0) {
+      tabela.innerHTML = '<tr><td colspan="10">Nenhum item encontrado</td></tr>';
+      return;
+    }
+
+    paginaProdutos.forEach(produto => {
+      const linha = document.createElement('tr');
+      linha.innerHTML = `
+        <td>${produto.codBarra}</td>
+        <td>${produto.codFabric}</td>
+        <td>${produto.codAuxiliar}</td>
+        <td>${produto.descricao}</td>
+        <td>${produto.un}</td>
+        <td>${produto.disponivel}</td>
+        <td>${produto.preco}</td>
+        <td>${produto.grupo}</td>
+        <td>${produto.subgrupo}</td>
+        <td>${produto.categoria}</td>
+      `;
+      linha.onclick = (event) => selecionarProduto(produto, linha, event);
+      tabela.appendChild(linha);
+    });
+
+    document.getElementById('paginaAtual').textContent = pagina;
+    document.getElementById('totalPaginas').textContent = Math.ceil(produtosFiltrados.length / itensPorPagina);
+  }
+
+  function selecionarProduto(produto, linha, event) {
+    if (event.ctrlKey) {
+      if (produtosSelecionados.includes(produto)) {
+        produtosSelecionados = produtosSelecionados.filter(p => p !== produto);
+        linha.classList.remove('selected');
+      } else {
+        produtosSelecionados.push(produto);
+        linha.classList.add('selected');
+      }
+    } else {
+      produtosSelecionados = [produto];
+      document.querySelectorAll('.table-container tr').forEach(linha => linha.classList.remove('selected'));
+      linha.classList.add('selected');
+    }
+  }
+
+  function paginaAnterior() {
+    if (pagina > 1) {
+      pagina--;
+      renderizarTabela();
+    }
+  }
+
+  function proximaPagina() {
+    if (pagina * itensPorPagina < produtosFiltrados.length) {
+      pagina++;
+      renderizarTabela();
+    }
+  }
+
+  function fecharModal() {
+    document.getElementById('modalDetalhes').style.display = 'none';
+  }
+
+  function aplicarAlteracao() {
+    if (produtosSelecionados.length > 0) {
+      const novoValor = parseInt(document.getElementById('inputDisponivel').value, 10);
+      produtosSelecionados.forEach(produto => {
+        const alteracao = {
+          usuario: 'Usuário Atual', // Substitua pelo nome do usuário atual
+          alteracao: `Alterou disponível de ${produto.disponivel} para ${isNaN(novoValor) ? 0 : novoValor}`,
+          data: new Date().toLocaleDateString(),
+          hora: new Date().toLocaleTimeString()
+        };
+        historicoAlteracoes.push(alteracao);
+        produto.disponivel = isNaN(novoValor) ? 0 : novoValor;
+      });
+      pesquisar();
+      alert('Alteração aplicada com sucesso!');
+    }
+  }
+
+  function limparResultados() {
+    document.getElementById('tabela-produtos').innerHTML = '';
+  }
+
+  function limparBusca() {
+    document.getElementById('inputBusca').value = '';
+    limparResultados();
+  }
+
+  function exportarExcel() {
+    const tabela = document.getElementById('tabela-produtos');
+    const linhas = Array.from(tabela.querySelectorAll('tr'));
+
+    if (linhas.length === 0) {
+      alert('Nenhum produto disponível para exportar.');
+      return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    linhas.forEach(linha => {
+      const colunas = Array.from(linha.querySelectorAll('td, th')).map(coluna => coluna.textContent);
+      csvContent += colunas.join(",") + "\r\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "produtos.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function importarExcel() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv, .xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel';
+    
+    input.onchange = e => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = event => {
+        const data = event.target.result;
+        const linhas = data.split('\n').map(linha => linha.split(','));
+        const tabela = document.getElementById('tabela-produtos');
+        tabela.innerHTML = '';
+
+        // Adicionar cabeçalho
+        const header = linhas[0];
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        header.forEach(coluna => {
+          const th = document.createElement('th');
+          th.textContent = coluna;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        tabela.appendChild(thead);
+
+        // Adicionar linhas de dados
+        const tbody = document.createElement('tbody');
+        linhas.slice(1).forEach(linha => {
+          const tr = document.createElement('tr');
+          linha.forEach(coluna => {
+            const td = document.createElement('td');
+            td.textContent = coluna;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        tabela.appendChild(tbody);
+      };
+      
+      reader.readAsText(file);
+    };
+    
+    input.click();
+  }
+
+  function ordenarTabela(coluna) {
+    const ordem = coluna.dataset.ordem === 'asc' ? 'desc' : 'asc';
+    coluna.dataset.ordem = ordem;
+    const chave = coluna.textContent.toLowerCase().replace(' ', '');
+    produtosFiltrados.sort((a, b) => {
+      if (a[chave] < b[chave]) return ordem === 'asc' ? -1 : 1;
+      if (a[chave] > b[chave]) return ordem === 'asc' ? 1 : -1;
+      return 0;
+    });
+    renderizarTabela();
+  }
+
+  document.querySelectorAll('th').forEach(th => {
+    th.onclick = () => ordenarTabela(th);
+  });
+
+  function confirmarExclusao() {
+    if (produtosSelecionados.length > 0) {
+      produtosSelecionados.forEach(produto => {
+        const alteracao = {
+          usuario: 'Usuário Atual', // Substitua pelo nome do usuário atual
+          alteracao: `Excluiu produto ${produto.descricao}`,
+          data: new Date().toLocaleDateString(),
+          hora: new Date().toLocaleTimeString()
+        };
+        historicoAlteracoes.push(alteracao);
+        const index = produtos.indexOf(produto);
+        if (index > -1) {
+          produtos.splice(index, 1);
+        }
+      });
+      produtosFiltrados = [...produtos];
+      produtosSelecionados = [];
+      renderizarTabela();
+      alert('Produtos excluídos com sucesso!');
+      fecharModalExcluir();
+    }
+  }
+
+  function alterarProduto() {
+    if (produtosSelecionados.length > 0) {
+      const produto = produtosSelecionados[0];
+      document.getElementById('inputNome').value = produto.descricao;
+      document.getElementById('inputQuantidade').value = produto.disponivel;
+      document.getElementById('inputGrupo').value = produto.grupo;
+      document.getElementById('inputSubgrupo').value = produto.subgrupo;
+      document.getElementById('inputCategoria').value = produto.categoria;
+      document.getElementById('inputUnidade').value = produto.un;
+      document.getElementById('modalDetalhes').style.display = 'block';
+    } else {
+      alert('Selecione um produto para alterar.');
+    }
+  }
+
+  function salvarAlteracoes() {
+    if (produtosSelecionados.length > 0) {
+      const produto = produtosSelecionados[0];
+      const alteracao = {
+        usuario: 'Usuário Atual', // Substitua pelo nome do usuário atual
+        alteracao: `Alterou produto ${produto.descricao}`,
+        data: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString()
+      };
+      historicoAlteracoes.push(alteracao);
+      produto.descricao = document.getElementById('inputNome').value;
+      produto.disponivel = parseInt(document.getElementById('inputQuantidade').value, 10);
+      produto.grupo = document.getElementById('inputGrupo').value;
+      produto.subgrupo = document.getElementById('inputSubgrupo').value;
+      produto.categoria = document.getElementById('inputCategoria').value;
+      produto.un = document.getElementById('inputUnidade').value;
+      fecharModal();
+      renderizarTabela();
+      alert('Alterações salvas com sucesso!');
+    }
+  }
+
+  function abrirModalAdicionar() {
+    document.getElementById('modalAdicionar').style.display = 'block';
+  }
+
+  function fecharModalAdicionar() {
+    document.getElementById('modalAdicionar').style.display = 'none';
+  }
+
+  function adicionarProduto() {
+    const codBarra = parseInt(document.getElementById('inputCodBarra').value, 10);
+    const codFabric = document.getElementById('inputCodFabric').value;
+    const codAuxiliar = document.getElementById('inputCodAuxiliar').value;
+    const descricao = document.getElementById('inputDescricao').value;
+    const un = document.getElementById('inputUnidadeAdicionar').value;
+    const disponivel = parseInt(document.getElementById('inputDisponivelAdicionar').value, 10);
+    const preco = document.getElementById('inputPreco').value;
+    const grupo = document.getElementById('inputGrupoAdicionar').value;
+    const subgrupo = document.getElementById('inputSubgrupoAdicionar').value;
+    const categoria = document.getElementById('inputCategoriaAdicionar').value;
+
+    const produtoExistente = produtos.find(produto => produto.codBarra === codBarra && produto.codFabric === codFabric);
+    if (produtoExistente) {
+      alert('Produto com o mesmo código de barras e código de fabricante já existe.');
+      return;
+    }
+
+    const novoProduto = { codBarra, codFabric, codAuxiliar, descricao, un, disponivel, preco, grupo, subgrupo, categoria };
+    produtos.push(novoProduto);
+    produtosFiltrados = [...produtos];
+    fecharModalAdicionar();
+    renderizarTabela();
+    alert('Produto adicionado com sucesso!');
+  }
+
+  function excluirProduto() {
+    if (produtosSelecionados.length > 0) {
+      produtosSelecionados.forEach(produto => {
+        const alteracao = {
+          usuario: 'Usuário Atual', // Substitua pelo nome do usuário atual
+          alteracao: `Excluiu produto ${produto.descricao}`,
+          data: new Date().toLocaleDateString(),
+          hora: new Date().toLocaleTimeString()
+        };
+        historicoAlteracoes.push(alteracao);
+        const index = produtos.indexOf(produto);
+        if (index > -1) {
+          produtos.splice(index, 1);
+        }
+      });
+      produtosFiltrados = [...produtos];
+      produtosSelecionados = [];
+      renderizarTabela();
+      alert('Produtos excluídos com sucesso!');
+    } else {
+      alert('Selecione um produto para excluir.');
+    }
+  }
+
+  function abrirModalExcluir() {
+    if (produtosSelecionados.length > 0) {
+      document.getElementById('modalExcluir').style.display = 'block';
+    } else {
+      alert('Selecione um produto para excluir.');
+    }
+  }
+
+  function fecharModalExcluir() {
+    document.getElementById('modalExcluir').style.display = 'none';
+  }
+
+  document.querySelectorAll('.filters input').forEach(input => {
+    input.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        pesquisar();
+      }
+    });
+  });
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+
+  function abrirModalHistorico() {
+    const tabelaHistorico = document.getElementById('tabela-historico');
+    tabelaHistorico.innerHTML = '';
+    historicoAlteracoes.forEach(alteracao => {
+      const linha = document.createElement('tr');
+      linha.innerHTML = `
+        <td>${alteracao.usuario}</td>
+        <td>${alteracao.alteracao}</td>
+        <td>${alteracao.data}</td>
+        <td>${alteracao.hora}</td>
+      `;
+      tabelaHistorico.appendChild(linha);
+    });
+    document.getElementById('modalHistorico').style.display = 'block';
+  }
+
+  function fecharModalHistorico() {
+    document.getElementById('modalHistorico').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
