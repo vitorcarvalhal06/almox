@@ -427,11 +427,6 @@
   </style>
 </head>
 <body>
-  <script>
-    if (!sessionStorage.getItem('loggedIn')) {
-      window.location.href = 'login.html';
-    }
-  </script>
   <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
 <div class="toolbar">
   <button onclick="limparBusca()">Limpar Filtros</button>
@@ -1046,14 +1041,6 @@
 
   function fecharModalHistorico() {
     document.getElementById('modalHistorico').style.display = 'none';
-  }
-
-  function login() {
-    sessionStorage.setItem('loggedIn', 'true');
-  }
-  function logout() {
-    sessionStorage.removeItem('loggedIn');
-    window.location.href = 'login.html';
   }
 </script>
 
