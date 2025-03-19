@@ -444,7 +444,11 @@
     <select><option>&lt;Todos&gt;</option></select>
   </label>
   <label>Tipo:
-    <select><option>&lt;Todos&gt;</option></select>
+    <select id="selectTipo">
+      <option>&lt;Todos&gt;</option>
+      <option>Consumo</option>
+      <option>Aeronautico</option>
+    </select>
   </label>
   <label>Situação:
     <select>
@@ -462,14 +466,6 @@
   </label>
   <label>Cód. Fabricante / Descrição:
     <input type="text" id="inputBusca" placeholder="Digite o código ou descrição">
-  </label>
-  <label>Preço:
-    <input type="number" id="inputPrecoMin" placeholder="Min">
-    <input type="number" id="inputPrecoMax" placeholder="Max">
-  </label>
-  <label>Disponível:
-    <input type="number" id="inputDisponivelMin" placeholder="Min">
-    <input type="number" id="inputDisponivelMax" placeholder="Max">
   </label>
   <button onclick="limparResultados()">Limpar Resultados</button>
   <button onclick="pesquisar()">Pesquisar</button>
@@ -652,17 +648,11 @@
   function pesquisar() {
     const valorBusca = document.getElementById('inputBusca').value.trim().toUpperCase();
     const tipoBusca = document.getElementById('selectBusca').value;
-    const precoMin = parseFloat(document.getElementById('inputPrecoMin').value);
-    const precoMax = parseFloat(document.getElementById('inputPrecoMax').value);
-    const disponivelMin = parseInt(document.getElementById('inputDisponivelMin').value, 10);
-    const disponivelMax = parseInt(document.getElementById('inputDisponivelMax').value, 10);
+    const tipoFiltro = document.getElementById('selectTipo').value;
 
     produtosFiltrados = produtos.filter(produto =>
       (produto[tipoBusca].toString().toUpperCase().includes(valorBusca)) &&
-      (isNaN(precoMin) || parseFloat(produto.preco) >= precoMin) &&
-      (isNaN(precoMax) || parseFloat(produto.preco) <= precoMax) &&
-      (isNaN(disponivelMin) || produto.disponivel >= disponivelMin) &&
-      (isNaN(disponivelMax) || produto.disponivel <= disponivelMax)
+      (tipoFiltro === '<Todos>' || produto.categoria === tipoFiltro)
     );
 
     pagina = 1;
