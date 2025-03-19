@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Produtos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -451,6 +452,14 @@
       <option>Inativos</option>
     </select>
   </label>
+  <label>Buscar por:
+    <select id="selectBusca">
+      <option value="codBarra">COD DE BARRA</option>
+      <option value="codFabric">COD DE FABRICANTE</option>
+      <option value="codAuxiliar">COD AUXILIAR</option>
+      <option value="descricao">DESCRIÇÃO</option>
+    </select>
+  </label>
   <label>Cód. Fabricante / Descrição:
     <input type="text" id="inputBusca" placeholder="Digite o código ou descrição">
   </label>
@@ -642,13 +651,14 @@
 
   function pesquisar() {
     const valorBusca = document.getElementById('inputBusca').value.trim().toUpperCase();
+    const tipoBusca = document.getElementById('selectBusca').value;
     const precoMin = parseFloat(document.getElementById('inputPrecoMin').value);
     const precoMax = parseFloat(document.getElementById('inputPrecoMax').value);
     const disponivelMin = parseInt(document.getElementById('inputDisponivelMin').value, 10);
     const disponivelMax = parseInt(document.getElementById('inputDisponivelMax').value, 10);
 
     produtosFiltrados = produtos.filter(produto =>
-      (produto.codBarra.toString().includes(valorBusca) || produto.codFabric.toUpperCase().includes(valorBusca) || produto.descricao.toUpperCase().includes(valorBusca)) &&
+      (produto[tipoBusca].toString().toUpperCase().includes(valorBusca)) &&
       (isNaN(precoMin) || parseFloat(produto.preco) >= precoMin) &&
       (isNaN(precoMax) || parseFloat(produto.preco) <= precoMax) &&
       (isNaN(disponivelMin) || produto.disponivel >= disponivelMin) &&
@@ -789,73 +799,61 @@
   }
 
   function exportarExcel() {
-    const tabela = document.getElementById('tabela-produtos');
-    const linhas = Array.from(tabela.querySelectorAll('tr'));
-
-    if (linhas.length === 0) {
-      alert('Nenhum produto disponível para exportar.');
+    if (produtos.length === 0) {
+      alert('Nenhum produto para exportar.');
       return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,";
-    linhas.forEach(linha => {
-      const colunas = Array.from(linha.querySelectorAll('td, th')).map(coluna => coluna.textContent);
-      csvContent += colunas.join(",") + "\r\n";
-    });
+    const worksheet = XLSX.utils.json_to_sheet(produtos);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Produtos");
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "produtos.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    XLSX.writeFile(workbook, "produtos.xlsx");
   }
 
   function importarExcel() {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.csv, .xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel';
-    
+    input.accept = '.xlsx,.xls,.csv';
+
     input.onchange = e => {
       const file = e.target.files[0];
       const reader = new FileReader();
-      
-      reader.onload = event => {
-        const data = event.target.result;
-        const linhas = data.split('\n').map(linha => linha.split(','));
-        const tabela = document.getElementById('tabela-produtos');
-        tabela.innerHTML = '';
 
-        // Adicionar cabeçalho
-        const header = linhas[0];
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        header.forEach(coluna => {
-          const th = document.createElement('th');
-          th.textContent = coluna;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        tabela.appendChild(thead);
+      reader.onload = (event) => {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
 
-        // Adicionar linhas de dados
-        const tbody = document.createElement('tbody');
-        linhas.slice(1).forEach(linha => {
-          const tr = document.createElement('tr');
-          linha.forEach(coluna => {
-            const td = document.createElement('td');
-            td.textContent = coluna;
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+        produtos.length = 0;
+        jsonData.forEach(row => {
+          const produto = {
+            codBarra: row['COD BARRA'],
+            codFabric: row['COD FABRIC'],
+            codAuxiliar: row['COD AUXILIAR'],
+            descricao: row['DESCRIÇÃO'],
+            un: row['UN'],
+            disponivel: parseInt(row['DISPONÍVEL'], 10),
+            preco: row['R$'],
+            serialNumber: row['SERIAL NUMBER'],
+            grupo: row['GRUPO'],
+            subgrupo: row['SUBGRUPO'],
+            categoria: row['CATEGORIA']
+          };
+          produtos.push(produto);
         });
-        tabela.appendChild(tbody);
+
+        produtosFiltrados = [...produtos];
+        renderizarTabela();
+        alert('Importação concluída com sucesso!');
       };
-      
-      reader.readAsText(file);
+
+      reader.readAsArrayBuffer(file);
     };
-    
+
     input.click();
   }
 
@@ -907,7 +905,7 @@
       document.getElementById('inputSubgrupo').value = produto.subgrupo;
       document.getElementById('inputCategoria').value = produto.categoria;
       document.getElementById('inputUnidade').value = produto.un;
-      document.getElementById('inputPrecoDetalhes').value = produto.preco; // Add this line
+      document.getElementById('inputPrecoDetalhes').value = produto.preco;
       document.getElementById('inputSerialNumber').value = produto.serialNumber.toUpperCase();
       document.getElementById('modalDetalhes').style.display = 'block';
     } else {
@@ -931,7 +929,7 @@
       produto.subgrupo = document.getElementById('inputSubgrupo').value;
       produto.categoria = document.getElementById('inputCategoria').value;
       produto.un = document.getElementById('inputUnidade').value;
-      produto.preco = document.getElementById('inputPrecoDetalhes').value; // Add this line
+      produto.preco = document.getElementById('inputPrecoDetalhes').value;
       produto.serialNumber = document.getElementById('inputSerialNumber').value.toUpperCase();
       fecharModal();
       renderizarTabela();
