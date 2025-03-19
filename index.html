@@ -298,6 +298,90 @@
       text-decoration: none;
       cursor: pointer;
     }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #007bff;
+      transition: color 0.3s;
+    }
+
+    .dropbtn:hover {
+      color: #0056b3;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      padding: 12px 16px;
+      z-index: 1;
+      border-radius: 5px;
+    }
+
+    .dropdown-content label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+      transition: color 0.3s, transform 0.3s;
+      white-space: nowrap; /* Ensure labels occupy only one line */
+    }
+
+    .dropdown-content input {
+      margin-right: 10px;
+    }
+
+    .dropdown-content label:hover {
+      background-color: #f1f1f1;
+      color: #007bff;
+      transform: scale(1.05);
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dark-mode .dropdown-content {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .dark-mode .dropdown-content label {
+      color: #fff;
+    }
+
+    .dark-mode .dropdown-content label:hover {
+      background-color: #444;
+      color: #007bff;
+    }
+    .dark-mode .history-modal-content {
+      background-color: #2e2e2e;
+      border-color: #555;
+      color: #ffffff;
+    }
+
+    .dark-mode .history-modal-content th, .dark-mode .history-modal-content td {
+      border-color: #444;
+      color: #ffffff;
+    }
+
+    .dark-mode .history-modal-content .close {
+      color: #ccc;
+    }
+
+    .dark-mode .history-modal-content .close:hover,
+    .dark-mode .history-modal-content .close:focus {
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -340,20 +424,38 @@
   <button onclick="pesquisar()">Pesquisar</button>
 </div>
 
+<div class="dropdown">
+  <button class="dropbtn">☰</button>
+  <div class="dropdown-content" id="dropdown-content">
+    <label><input type="checkbox" id="colCodBarra" checked> COD BARRA</label>
+    <label><input type="checkbox" id="colCodFabric" checked> COD FABRIC</label>
+    <label><input type="checkbox" id="colCodAuxiliar" checked> COD AUXILIAR</label>
+    <label><input type="checkbox" id="colDescricao" checked> DESCRIÇÃO</label>
+    <label><input type="checkbox" id="colUn" checked> UN</label>
+    <label><input type="checkbox" id="colDisponivel" checked> DISPONÍVEL</label>
+    <label><input type="checkbox" id="colPreco" checked> R$</label>
+    <label><input type="checkbox" id="colSerialNumber" checked> SERIAL NUMBER</label>
+    <label><input type="checkbox" id="colGrupo" checked> GRUPO</label>
+    <label><input type="checkbox" id="colSubgrupo" checked> SUBGRUPO</label>
+    <label><input type="checkbox" id="colCategoria" checked> CATEGORIA</label>
+  </div>
+</div>
+
 <div class="table-container">
   <table>
     <thead>
       <tr>
-        <th>COD BARRA</th>
-        <th>COD FABRIC</th>
-        <th>COD AUXILIAR</th>
-        <th>DESCRIÇÃO</th>
-        <th>UN</th>
-        <th>DISPONÍVEL</th>
-        <th>R$</th>
-        <th>GRUPO</th>
-        <th>SUBGRUPO</th>
-        <th>CATEGORIA</th>
+        <th class="colCodBarra">COD BARRA</th>
+        <th class="colCodFabric">COD FABRIC</th>
+        <th class="colCodAuxiliar">COD AUXILIAR</th>
+        <th class="colDescricao">DESCRIÇÃO</th>
+        <th class="colUn">UN</th>
+        <th class="colDisponivel">DISPONÍVEL</th>
+        <th class="colPreco">R$</th>
+        <th class="colSerialNumber">SERIAL NUMBER</th>
+        <th class="colGrupo">GRUPO</th>
+        <th class="colSubgrupo">SUBGRUPO</th>
+        <th class="colCategoria">CATEGORIA</th>
       </tr>
     </thead>
     <tbody id="tabela-produtos">
@@ -402,6 +504,7 @@
           <option value="€">€</option>
         </select>
       </label>
+      <label>Serial Number: <input type="text" id="inputSerialNumber"></label>
       <button type="button" onclick="salvarAlteracoes()">Salvar Alterações</button>
     </form>
   </div>
@@ -436,6 +539,7 @@
           <option value="€">€</option>
         </select>
       </label>
+      <label>Serial Number: <input type="text" id="inputSerialNumberAdicionar"></label>
       <label>Grupo: <input type="text" id="inputGrupoAdicionar"></label>
       <label>Subgrupo: <input type="text" id="inputSubgrupoAdicionar"></label>
       <label>Categoria: <input type="text" id="inputCategoriaAdicionar"></label>
@@ -521,23 +625,24 @@
     const paginaProdutos = produtosFiltrados.slice(inicio, fim);
 
     if (paginaProdutos.length === 0) {
-      tabela.innerHTML = '<tr><td colspan="10">Nenhum item encontrado</td></tr>';
+      tabela.innerHTML = '<tr><td colspan="11">Nenhum item encontrado</td></tr>';
       return;
     }
 
     paginaProdutos.forEach(produto => {
       const linha = document.createElement('tr');
       linha.innerHTML = `
-        <td>${produto.codBarra}</td>
-        <td>${produto.codFabric}</td>
-        <td>${produto.codAuxiliar}</td>
-        <td>${produto.descricao}</td>
-        <td>${produto.un}</td>
-        <td>${produto.disponivel}</td>
-        <td>${produto.preco}</td>
-        <td>${produto.grupo}</td>
-        <td>${produto.subgrupo}</td>
-        <td>${produto.categoria}</td>
+        <td class="colCodBarra">${produto.codBarra}</td>
+        <td class="colCodFabric">${produto.codFabric}</td>
+        <td class="colCodAuxiliar">${produto.codAuxiliar}</td>
+        <td class="colDescricao">${produto.descricao}</td>
+        <td class="colUn">${produto.un}</td>
+        <td class="colDisponivel">${produto.disponivel}</td>
+        <td class="colPreco">${produto.preco}</td>
+        <td class="colSerialNumber">${produto.serialNumber.toUpperCase()}</td>
+        <td class="colGrupo">${produto.grupo}</td>
+        <td class="colSubgrupo">${produto.subgrupo}</td>
+        <td class="colCategoria">${produto.categoria}</td>
       `;
       linha.onclick = (event) => selecionarProduto(produto, linha, event);
       tabela.appendChild(linha);
@@ -545,7 +650,40 @@
 
     document.getElementById('paginaAtual').textContent = pagina;
     document.getElementById('totalPaginas').textContent = Math.ceil(produtosFiltrados.length / itensPorPagina);
+    atualizarVisibilidadeColunas();
   }
+
+  function atualizarVisibilidadeColunas() {
+    const colunas = ['CodBarra', 'CodFabric', 'CodAuxiliar', 'Descricao', 'Un', 'Disponivel', 'Preco', 'SerialNumber', 'Grupo', 'Subgrupo', 'Categoria'];
+    colunas.forEach(coluna => {
+      const checkbox = document.getElementById(`col${coluna}`);
+      const elementos = document.querySelectorAll(`.col${coluna}`);
+      elementos.forEach(elemento => {
+        elemento.style.display = checkbox.checked ? '' : 'none';
+      });
+    });
+  }
+
+  document.querySelectorAll('.dropdown-content input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', atualizarVisibilidadeColunas);
+  });
+
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('dropdown-content');
+    if (!event.target.closest('.dropdown')) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  document.querySelector('.dropbtn').addEventListener('click', function(event) {
+    const dropdown = document.getElementById('dropdown-content');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    event.stopPropagation();
+  });
+
+  document.getElementById('dropdown-content').addEventListener('click', function(event) {
+    event.stopPropagation();
+  });
 
   function selecionarProduto(produto, linha, event) {
     if (event.ctrlKey) {
@@ -728,6 +866,7 @@
       document.getElementById('inputCategoria').value = produto.categoria;
       document.getElementById('inputUnidade').value = produto.un;
       document.getElementById('inputPrecoDetalhes').value = produto.preco; // Add this line
+      document.getElementById('inputSerialNumber').value = produto.serialNumber.toUpperCase();
       document.getElementById('modalDetalhes').style.display = 'block';
     } else {
       alert('Selecione um produto para alterar.');
@@ -751,6 +890,7 @@
       produto.categoria = document.getElementById('inputCategoria').value;
       produto.un = document.getElementById('inputUnidade').value;
       produto.preco = document.getElementById('inputPrecoDetalhes').value; // Add this line
+      produto.serialNumber = document.getElementById('inputSerialNumber').value.toUpperCase();
       fecharModal();
       renderizarTabela();
       alert('Alterações salvas com sucesso!');
@@ -773,6 +913,7 @@
     const un = document.getElementById('inputUnidadeAdicionar').value;
     const disponivel = parseInt(document.getElementById('inputDisponivelAdicionar').value, 10);
     const preco = document.getElementById('inputPreco').value;
+    const serialNumber = document.getElementById('inputSerialNumberAdicionar').value.toUpperCase();
     const grupo = document.getElementById('inputGrupoAdicionar').value;
     const subgrupo = document.getElementById('inputSubgrupoAdicionar').value;
     const categoria = document.getElementById('inputCategoriaAdicionar').value;
@@ -783,7 +924,7 @@
       return;
     }
 
-    const novoProduto = { codBarra, codFabric, codAuxiliar, descricao, un, disponivel, preco, grupo, subgrupo, categoria };
+    const novoProduto = { codBarra, codFabric, codAuxiliar, descricao, un, disponivel, preco, grupo, subgrupo, categoria, serialNumber };
     produtos.push(novoProduto);
     produtosFiltrados = [...produtos];
     fecharModalAdicionar();
