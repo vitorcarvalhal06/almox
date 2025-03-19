@@ -606,7 +606,7 @@
     const disponivelMax = parseInt(document.getElementById('inputDisponivelMax').value, 10);
 
     produtosFiltrados = produtos.filter(produto =>
-      (produto.codFabric.includes(valorBusca) || produto.descricao.toUpperCase().includes(valorBusca)) &&
+      (produto.codBarra.toString().includes(valorBusca) || produto.codFabric.toUpperCase().includes(valorBusca) || produto.descricao.toUpperCase().includes(valorBusca)) &&
       (isNaN(precoMin) || parseFloat(produto.preco) >= precoMin) &&
       (isNaN(precoMax) || parseFloat(produto.preco) <= precoMax) &&
       (isNaN(disponivelMin) || produto.disponivel >= disponivelMin) &&
