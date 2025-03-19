@@ -330,6 +330,10 @@
     .dropdown-content label {
       display: block;
       margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+      transition: color 0.3s, transform 0.3s;
+      white-space: nowrap; /* Ensure labels occupy only one line */
     }
 
     .dropdown-content input {
@@ -338,6 +342,8 @@
 
     .dropdown-content label:hover {
       background-color: #f1f1f1;
+      color: #007bff;
+      transform: scale(1.05);
     }
 
     .dropdown:hover .dropdown-content {
@@ -355,6 +361,7 @@
 
     .dark-mode .dropdown-content label:hover {
       background-color: #444;
+      color: #007bff;
     }
     .dark-mode .history-modal-content {
       background-color: #2e2e2e;
