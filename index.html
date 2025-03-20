@@ -81,6 +81,10 @@
       padding: 8px;
       text-align: left;
       cursor: pointer;
+      white-space: nowrap; /* Ensure table cells do not wrap */
+    }
+    th {
+      white-space: nowrap; /* Ensure column headers do not wrap */
     }
     .selected {
       background-color: #cce5ff;
@@ -425,6 +429,46 @@
         margin: 5px 0;
       }
     }
+    .table-container {
+      overflow-x: auto;
+    }
+    .tabs {
+      display: flex;
+      flex-direction: column;
+    }
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: space-between; /* Align horizontally with uniform spacing */
+      margin-bottom: 10px;
+    }
+    .tab-buttons button {
+      background-color: #e0e0e0; /* Softer color */
+      color: #333;
+      border: none;
+      padding: 5px 10px; /* Smaller padding */
+      cursor: pointer;
+      border-radius: 3px; /* Smaller border radius */
+      font-size: 12px; /* Smaller font size */
+      transition: background-color 0.3s, transform 0.3s;
+      margin: 0 5px; /* Uniform spacing */
+    }
+    .tab-buttons button:hover {
+      background-color: #c0c0c0;
+      transform: scale(1.05);
+    }
+    .dark-mode .tab-buttons button {
+      background-color: #444;
+      color: #fff;
+    }
+    .dark-mode .tab-buttons button:hover {
+      background-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -474,17 +518,78 @@
 <div class="dropdown">
   <button class="dropbtn">☰</button>
   <div class="dropdown-content" id="dropdown-content">
-    <label><input type="checkbox" id="colCodBarra" checked> COD BARRA</label>
-    <label><input type="checkbox" id="colCodFabric" checked> COD FABRIC</label>
-    <label><input type="checkbox" id="colCodAuxiliar" checked> COD AUXILIAR</label>
-    <label><input type="checkbox" id="colDescricao" checked> DESCRIÇÃO</label>
-    <label><input type="checkbox" id="colUn" checked> UN</label>
-    <label><input type="checkbox" id="colDisponivel" checked> DISPONÍVEL</label>
-    <label><input type="checkbox" id="colPreco" checked> R$</label>
-    <label><input type="checkbox" id="colSerialNumber" checked> SERIAL NUMBER</label>
-    <label><input type="checkbox" id="colGrupo" checked> GRUPO</label>
-    <label><input type="checkbox" id="colSubgrupo" checked> SUBGRUPO</label>
-    <label><input type="checkbox" id="colCategoria" checked> CATEGORIA</label>
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button onclick="showTab('tab1')">Dados Gerais</button>
+        <button onclick="showTab('tab2')">Estoque/Compra</button>
+        <button onclick="showTab('tab3')">Financeiro/Promoção</button>
+        <button onclick="showTab('tab4')">Fiscais e Outros</button>
+      </div>
+      <div id="tab1" class="tab active">
+        <label><input type="checkbox" id="colCodBarra" checked> COD BARRA</label>
+        <label><input type="checkbox" id="colCodFabric" checked> COD FABRIC</label>
+        <label><input type="checkbox" id="colDun14" checked> DUN14</label>
+        <label><input type="checkbox" id="colDescricao" checked> DESCRIÇÃO</label>
+        <label><input type="checkbox" id="colUn" checked> UN</label>
+        <label><input type="checkbox" id="colMarca" checked> MARCA</label>
+        <label><input type="checkbox" id="colComplemento" checked> COMPLEMENTO</label>
+        <label><input type="checkbox" id="colGrupo" checked> GRUPO</label>
+        <label><input type="checkbox" id="colSubgrupo" checked> SUBGRUPO</label>
+        <label><input type="checkbox" id="colDescricaoCompra" checked> DESCRIÇÃO PARA COMPRA</label>
+        <label><input type="checkbox" id="colTemEquiv" checked> TEM EQUIV</label>
+        <label><input type="checkbox" id="colInativo" checked> INATIVO</label>
+        <label><input type="checkbox" id="colLetra" checked> LETRA</label>
+        <label><input type="checkbox" id="colCategoria" checked> CATEGORIA</label>
+        <label><input type="checkbox" id="colCor" checked> COR</label>
+        <label><input type="checkbox" id="colABC" checked> ABC</label>
+        <label><input type="checkbox" id="colCodProduto" checked> COD PRODUTO</label>
+        <label><input type="checkbox" id="colObservacao" checked> OBSERVAÇÃO</label>
+        <label><input type="checkbox" id="colUrlEcommerce" checked> URL ECOMMERCE</label>
+        <label><input type="checkbox" id="colInfoProduto" checked> INFORMAÇÕES DO PRODUTO</label>
+        <label><input type="checkbox" id="colProdutoSimilar" checked> PRODUTO SIMILAR</label>
+      </div>
+      <div id="tab2" class="tab">
+        <label><input type="checkbox" id="colEstoqueReservado" checked> ESTOQUE RESERVADO</label>
+        <label><input type="checkbox" id="colDisponivel" checked> DISPONÍVEL</label>
+        <label><input type="checkbox" id="colQtdeCompra" checked> QTDE COMPRA</label>
+        <label><input type="checkbox" id="colEstoqueSeg" checked> ESTOQUE SEG</label>
+        <label><input type="checkbox" id="colEstoqueMin" checked> ESTOQUE MIN</label>
+        <label><input type="checkbox" id="colDtUltAlteracao" checked> DT ULT ALTERAÇÃO</label>
+      </div>
+      <div id="tab3" class="tab">
+        <label><input type="checkbox" id="colPreco" checked> R$ PREÇO</label>
+        <label><input type="checkbox" id="colComAVista" checked> COM.A VISTA</label>
+        <label><input type="checkbox" id="colComAPrazo" checked> COM.A PRAZO</label>
+        <label><input type="checkbox" id="colDtInicioProm" checked> DT INICIO PROM</label>
+        <label><input type="checkbox" id="colDtFimProm" checked> DT FIM PROM</label>
+        <label><input type="checkbox" id="colPesoBruto" checked> PESO BRUTO</label>
+        <label><input type="checkbox" id="colPromocao" checked> PROMOÇÃO</label>
+        <label><input type="checkbox" id="colSuspenso" checked> SUSPENSO</label>
+        <label><input type="checkbox" id="colCustoTotal" checked> CUSTO TOTAL</label>
+        <label><input type="checkbox" id="colCustoMedio" checked> CUSTO MÉDIO</label>
+        <label><input type="checkbox" id="colCustoProducao" checked> CUSTO PRODUÇÃO</label>
+        <label><input type="checkbox" id="colValorFrete" checked> VALOR FRETE</label>
+      </div>
+      <div id="tab4" class="tab">
+        <label><input type="checkbox" id="colCFiscal" checked> C. FISCAL</label>
+        <label><input type="checkbox" id="colClassFiscal" checked> CLASS.FISCAL</label>
+        <label><input type="checkbox" id="colDtCadastro" checked> DT CADASTRO</label>
+        <label><input type="checkbox" id="colCST" checked> CST</label>
+        <label><input type="checkbox" id="colGrupoImpostos" checked> GRUPO IMPOSTOS</label>
+        <label><input type="checkbox" id="colTipo" checked> TIPO</label>
+        <label><input type="checkbox" id="colLargura" checked> LARGURA</label>
+        <label><input type="checkbox" id="colAltura" checked> ALTURA</label>
+        <label><input type="checkbox" id="colComprimento" checked> COMPRIMENTO</label>
+        <label><input type="checkbox" id="colTamanho" checked> TAMANHO</label>
+        <label><input type="checkbox" id="colPesoLiquido" checked> PESO LIQUIDO</label>
+        <label><input type="checkbox" id="colGrupoTributo" checked> GRUPO TRIBUTO</label>
+        <label><input type="checkbox" id="colIPI" checked> IPI</label>
+        <label><input type="checkbox" id="colGarantiaDias" checked> GARANTIA (DIAS)</label>
+        <label><input type="checkbox" id="colSetor" checked> SETOR</label>
+        <label><input type="checkbox" id="colCodCest" checked> COD CEST</label>
+        <label><input type="checkbox" id="colCodBeneficio" checked> CÓD. BENEFÍCIO</label>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -494,15 +599,60 @@
       <tr>
         <th class="colCodBarra">COD BARRA</th>
         <th class="colCodFabric">COD FABRIC</th>
-        <th class="colCodAuxiliar">COD AUXILIAR</th>
+        <th class="colDun14">DUN14</th>
         <th class="colDescricao">DESCRIÇÃO</th>
         <th class="colUn">UN</th>
+        <th class="colMarca">MARCA</th>
+        <th class="colEstoqueReservado">ESTOQUE RESERVADO</th>
         <th class="colDisponivel">DISPONÍVEL</th>
-        <th class="colPreco">R$</th>
-        <th class="colSerialNumber">SERIAL NUMBER</th>
+        <th class="colPreco">R$ PREÇO</th>
+        <th class="colQtdeCompra">QTDE COMPRA</th>
+        <th class="colDtInicioProm">DT INICIO PROM</th>
+        <th class="colDtFimProm">DT FIM PROM</th>
+        <th class="colPesoBruto">PESO BRUTO</th>
+        <th class="colPromocao">PROMOÇÃO</th>
+        <th class="colSuspenso">SUSPENSO</th>
+        <th class="colComAVista">COM.A VISTA</th>
+        <th class="colComAPrazo">COM.A PRAZO</th>
+        <th class="colComplemento">COMPLEMENTO</th>
         <th class="colGrupo">GRUPO</th>
         <th class="colSubgrupo">SUBGRUPO</th>
+        <th class="colDescricaoCompra">DESCRIÇÃO PARA COMPRA</th>
+        <th class="colTemEquiv">TEM EQUIV</th>
+        <th class="colInativo">INATIVO</th>
+        <th class="colLetra">LETRA</th>
+        <th class="colCFiscal">C. FISCAL</th>
+        <th class="colClassFiscal">CLASS.FISCAL</th>
+        <th class="colDtCadastro">DT CADASTRO</th>
         <th class="colCategoria">CATEGORIA</th>
+        <th class="colCor">COR</th>
+        <th class="colABC">ABC</th>
+        <th class="colCodProduto">COD PRODUTO</th>
+        <th class="colCST">CST</th>
+        <th class="colEstoqueSeg">ESTOQUE SEG</th>
+        <th class="colEstoqueMin">ESTOQUE MIN</th>
+        <th class="colDtUltAlteracao">DT ULT ALTERAÇÃO</th>
+        <th class="colGrupoImpostos">GRUPO IMPOSTOS</th>
+        <th class="colTipo">TIPO</th>
+        <th class="colObservacao">OBSERVAÇÃO</th>
+        <th class="colLargura">LARGURA</th>
+        <th class="colAltura">ALTURA</th>
+        <th class="colComprimento">COMPRIMENTO</th>
+        <th class="colTamanho">TAMANHO</th>
+        <th class="colPesoLiquido">PESO LIQUIDO</th>
+        <th class="colGrupoTributo">GRUPO TRIBUTO</th>
+        <th class="colIPI">IPI</th>
+        <th class="colGarantiaDias">GARANTIA (DIAS)</th>
+        <th class="colSetor">SETOR</th>
+        <th class="colCustoTotal">CUSTO TOTAL</th>
+        <th class="colCustoMedio">CUSTO MÉDIO</th>
+        <th class="colCustoProducao">CUSTO PRODUÇÃO</th>
+        <th class="colUrlEcommerce">URL ECOMMERCE</th>
+        <th class="colInfoProduto">INFORMAÇÕES DO PRODUTO</th>
+        <th class="colProdutoSimilar">PRODUTO SIMILAR</th>
+        <th class="colCodCest">COD CEST</th>
+        <th class="colValorFrete">VALOR FRETE</th>
+        <th class="colCodBeneficio">CÓD. BENEFÍCIO</th>
       </tr>
     </thead>
     <tbody id="tabela-produtos">
@@ -667,7 +817,7 @@
     const paginaProdutos = produtosFiltrados.slice(inicio, fim);
 
     if (paginaProdutos.length === 0) {
-      tabela.innerHTML = '<tr><td colspan="11">Nenhum item encontrado</td></tr>';
+      tabela.innerHTML = '<tr><td colspan="58">Nenhum item encontrado</td></tr>';
       return;
     }
 
@@ -676,17 +826,63 @@
       linha.innerHTML = `
         <td class="colCodBarra">${produto.codBarra}</td>
         <td class="colCodFabric">${produto.codFabric}</td>
-        <td class="colCodAuxiliar">${produto.codAuxiliar}</td>
+        <td class="colDun14">${produto.dun14}</td>
         <td class="colDescricao">${produto.descricao}</td>
         <td class="colUn">${produto.un}</td>
+        <td class="colMarca">${produto.marca}</td>
+        <td class="colEstoqueReservado">${produto.estoqueReservado}</td>
         <td class="colDisponivel">${produto.disponivel}</td>
         <td class="colPreco">${produto.preco}</td>
-        <td class="colSerialNumber">${produto.serialNumber.toUpperCase()}</td>
+        <td class="colQtdeCompra">${produto.qtdeCompra}</td>
+        <td class="colDtInicioProm">${produto.dtInicioProm}</td>
+        <td class="colDtFimProm">${produto.dtFimProm}</td>
+        <td class="colPesoBruto">${produto.pesoBruto}</td>
+        <td class="colPromocao">${produto.promocao}</td>
+        <td class="colSuspenso">${produto.suspenso}</td>
+        <td class="colComAVista">${produto.comAVista}</td>
+        <td class="colComAPrazo">${produto.comAPrazo}</td>
+        <td class="colComplemento">${produto.complemento}</td>
         <td class="colGrupo">${produto.grupo}</td>
         <td class="colSubgrupo">${produto.subgrupo}</td>
+        <td class="colDescricaoCompra">${produto.descricaoCompra}</td>
+        <td class="colTemEquiv">${produto.temEquiv}</td>
+        <td class="colInativo">${produto.inativo}</td>
+        <td class="colLetra">${produto.letra}</td>
+        <td class="colCFiscal">${produto.cFiscal}</td>
+        <td class="colClassFiscal">${produto.classFiscal}</td>
+        <td class="colDtCadastro">${produto.dtCadastro}</td>
         <td class="colCategoria">${produto.categoria}</td>
+        <td class="colCor">${produto.cor}</td>
+        <td class="colABC">${produto.abc}</td>
+        <td class="colCodProduto">${produto.codProduto}</td>
+        <td class="colCST">${produto.cst}</td>
+        <td class="colEstoqueSeg">${produto.estoqueSeg}</td>
+        <td class="colEstoqueMin">${produto.estoqueMin}</td>
+        <td class="colDtUltAlteracao">${produto.dtUltAlteracao}</td>
+        <td class="colGrupoImpostos">${produto.grupoImpostos}</td>
+        <td class="colTipo">${produto.tipo}</td>
+        <td class="colObservacao">${produto.observacao}</td>
+        <td class="colLargura">${produto.largura}</td>
+        <td class="colAltura">${produto.altura}</td>
+        <td class="colComprimento">${produto.comprimento}</td>
+        <td class="colTamanho">${produto.tamanho}</td>
+        <td class="colPesoLiquido">${produto.pesoLiquido}</td>
+        <td class="colGrupoTributo">${produto.grupoTributo}</td>
+        <td class="colIPI">${produto.ipi}</td>
+        <td class="colGarantiaDias">${produto.garantiaDias}</td>
+        <td class="colSetor">${produto.setor}</td>
+        <td class="colCustoTotal">${produto.custoTotal}</td>
+        <td class="colCustoMedio">${produto.custoMedio}</td>
+        <td class="colCustoProducao">${produto.custoProducao}</td>
+        <td class="colUrlEcommerce">${produto.urlEcommerce}</td>
+        <td class="colInfoProduto">${produto.infoProduto}</td>
+        <td class="colProdutoSimilar">${produto.produtoSimilar}</td>
+        <td class="colCodCest">${produto.codCest}</td>
+        <td class="colValorFrete">${produto.valorFrete}</td>
+        <td class="colCodBeneficio">${produto.codBeneficio}</td>
       `;
       linha.onclick = (event) => selecionarProduto(produto, linha, event);
+      abrirAlteracaoAoClicarDuasVezes(produto, linha);
       tabela.appendChild(linha);
     });
 
@@ -696,10 +892,10 @@
   }
 
   function atualizarVisibilidadeColunas() {
-    const colunas = ['CodBarra', 'CodFabric', 'CodAuxiliar', 'Descricao', 'Un', 'Disponivel', 'Preco', 'SerialNumber', 'Grupo', 'Subgrupo', 'Categoria'];
-    colunas.forEach(coluna => {
-      const checkbox = document.getElementById(`col${coluna}`);
-      const elementos = document.querySelectorAll(`.col${coluna}`);
+    const checkboxes = document.querySelectorAll('.dropdown-content input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      const colunaClass = checkbox.id.replace('col', 'col');
+      const elementos = document.querySelectorAll(`.${colunaClass}`);
       elementos.forEach(elemento => {
         elemento.style.display = checkbox.checked ? '' : 'none';
       });
@@ -741,6 +937,13 @@
       document.querySelectorAll('.table-container tr').forEach(linha => linha.classList.remove('selected'));
       linha.classList.add('selected');
     }
+  }
+
+  function abrirAlteracaoAoClicarDuasVezes(produto, linha) {
+    linha.ondblclick = () => {
+      produtosSelecionados = [produto];
+      alterarProduto();
+    };
   }
 
   function paginaAnterior() {
@@ -794,7 +997,64 @@
       return;
     }
 
-    const worksheet = XLSX.utils.json_to_sheet(produtos);
+    const worksheet = XLSX.utils.json_to_sheet(produtos.map(produto => ({
+      'COD BARRA': produto.codBarra,
+      'COD FABRIC': produto.codFabric,
+      'DUN14': produto.dun14,
+      'DESCRIÇÃO': produto.descricao,
+      'UN': produto.un,
+      'ESTOQUE RESERVADO': produto.estoqueReservado,
+      'DISPONÍVEL': produto.disponivel,
+      'R$ PREÇO': produto.preco,
+      'QTDE COMPRA': produto.qtdeCompra,
+      'DT INICIO PROM': produto.dtInicioProm,
+      'DT FIM PROM': produto.dtFimProm,
+      'PESO BRUTO': produto.pesoBruto,
+      'PROMOÇÃO': produto.promocao,
+      'SUSPENSO': produto.suspenso,
+      'COM.A VISTA': produto.comAVista,
+      'COM.A PRAZO': produto.comAPrazo,
+      'COMPLEMENTO': produto.complemento,
+      'GRUPO': produto.grupo,
+      'SUBGRUPO': produto.subgrupo,
+      'DESCRIÇÃO PARA COMPRA': produto.descricaoCompra,
+      'TEM EQUIV': produto.temEquiv,
+      'INATIVO': produto.inativo,
+      'LETRA': produto.letra,
+      'C. FISCAL': produto.cFiscal,
+      'CLASS.FISCAL': produto.classFiscal,
+      'DT CADASTRO': produto.dtCadastro,
+      'CATEGORIA': produto.categoria,
+      'COR': produto.cor,
+      'ABC': produto.abc,
+      'COD PRODUTO': produto.codProduto,
+      'CST': produto.cst,
+      'ESTOQUE SEG': produto.estoqueSeg,
+      'ESTOQUE MIN': produto.estoqueMin,
+      'DT ULT ALTERAÇÃO': produto.dtUltAlteracao,
+      'GRUPO IMPOSTOS': produto.grupoImpostos,
+      'TIPO': produto.tipo,
+      'OBSERVAÇÃO': produto.observacao,
+      'LARGURA': produto.largura,
+      'ALTURA': produto.altura,
+      'COMPRIMENTO': produto.comprimento,
+      'TAMANHO': produto.tamanho,
+      'PESO LIQUIDO': produto.pesoLiquido,
+      'GRUPO TRIBUTO': produto.grupoTributo,
+      'IPI': produto.ipi,
+      'GARANTIA (DIAS)': produto.garantiaDias,
+      'SETOR': produto.setor,
+      'CUSTO TOTAL': produto.custoTotal,
+      'CUSTO MÉDIO': produto.custoMedio,
+      'CUSTO PRODUÇÃO': produto.custoProducao,
+      'URL ECOMMERCE': produto.urlEcommerce,
+      'INFORMAÇÕES DO PRODUTO': produto.infoProduto,
+      'PRODUTO SIMILAR': produto.produtoSimilar,
+      'COD CEST': produto.codCest,
+      'VALOR FRETE': produto.valorFrete,
+      'CÓD. BENEFÍCIO': produto.codBeneficio
+    })));
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Produtos");
 
@@ -823,15 +1083,57 @@
           const produto = {
             codBarra: row['COD BARRA'],
             codFabric: row['COD FABRIC'],
-            codAuxiliar: row['COD AUXILIAR'],
             descricao: row['DESCRIÇÃO'],
             un: row['UN'],
             disponivel: parseInt(row['DISPONÍVEL'], 10),
-            preco: row['R$'],
-            serialNumber: row['SERIAL NUMBER'],
+            preco: row['R$ PREÇO'],
+            qtdeCompra: parseInt(row['QTDE COMPRA'], 10),
+            dtInicioProm: row['DT INICIO PROM'],
+            dtFimProm: row['DT FIM PROM'],
+            pesoBruto: parseFloat(row['PESO BRUTO']),
+            promocao: row['PROMOÇÃO'],
+            suspenso: row['SUSPENSO'],
+            comAVista: row['COM.A VISTA'],
+            comAPrazo: row['COM.A PRAZO'],
+            complemento: row['COMPLEMENTO'],
             grupo: row['GRUPO'],
             subgrupo: row['SUBGRUPO'],
-            categoria: row['CATEGORIA']
+            descricaoCompra: row['DESCRIÇÃO PARA COMPRA'],
+            temEquiv: row['TEM EQUIV'],
+            inativo: row['INATIVO'],
+            letra: row['LETRA'],
+            cFiscal: row['C. FISCAL'],
+            classFiscal: row['CLASS.FISCAL'],
+            dtCadastro: row['DT CADASTRO'],
+            categoria: row['CATEGORIA'],
+            cor: row['COR'],
+            abc: row['ABC'],
+            codProduto: row['COD PRODUTO'],
+            cst: row['CST'],
+            estoqueSeg: parseInt(row['ESTOQUE SEG'], 10),
+            estoqueMin: parseInt(row['ESTOQUE MIN'], 10),
+            dtUltAlteracao: row['DT ULT ALTERAÇÃO'],
+            grupoImpostos: row['GRUPO IMPOSTOS'],
+            tipo: row['TIPO'],
+            observacao: row['OBSERVAÇÃO'],
+            largura: parseFloat(row['LARGURA']),
+            altura: parseFloat(row['ALTURA']),
+            comprimento: parseFloat(row['COMPRIMENTO']),
+            tamanho: row['TAMANHO'],
+            pesoLiquido: parseFloat(row['PESO LIQUIDO']),
+            grupoTributo: row['GRUPO TRIBUTO'],
+            ipi: row['IPI'],
+            garantiaDias: parseInt(row['GARANTIA (DIAS)'], 10),
+            setor: row['SETOR'],
+            custoTotal: parseFloat(row['CUSTO TOTAL']),
+            custoMedio: parseFloat(row['CUSTO MÉDIO']),
+            custoProducao: parseFloat(row['CUSTO PRODUÇÃO']),
+            urlEcommerce: row['URL ECOMMERCE'],
+            infoProduto: row['INFORMAÇÕES DO PRODUTO'],
+            produtoSimilar: row['PRODUTO SIMILAR'],
+            codCest: row['COD CEST'],
+            valorFrete: parseFloat(row['VALOR FRETE']),
+            codBeneficio: row['CÓD. BENEFÍCIO']
           };
           produtos.push(produto);
         });
@@ -896,7 +1198,7 @@
       document.getElementById('inputCategoria').value = produto.categoria;
       document.getElementById('inputUnidade').value = produto.un;
       document.getElementById('inputPrecoDetalhes').value = produto.preco;
-      document.getElementById('inputSerialNumber').value = produto.serialNumber.toUpperCase();
+      document.getElementById('inputSerialNumber').value = produto.serialNumber ? produto.serialNumber.toUpperCase() : '';
       document.getElementById('modalDetalhes').style.display = 'block';
     } else {
       alert('Selecione um produto para alterar.');
@@ -1029,6 +1331,11 @@
 
   function fecharModalHistorico() {
     document.getElementById('modalHistorico').style.display = 'none';
+  }
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
   }
 </script>
 
