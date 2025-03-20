@@ -432,6 +432,43 @@
     .table-container {
       overflow-x: auto;
     }
+    .tabs {
+      display: flex;
+      flex-direction: column;
+    }
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: space-between; /* Align horizontally with uniform spacing */
+      margin-bottom: 10px;
+    }
+    .tab-buttons button {
+      background-color: #e0e0e0; /* Softer color */
+      color: #333;
+      border: none;
+      padding: 5px 10px; /* Smaller padding */
+      cursor: pointer;
+      border-radius: 3px; /* Smaller border radius */
+      font-size: 12px; /* Smaller font size */
+      transition: background-color 0.3s, transform 0.3s;
+      margin: 0 5px; /* Uniform spacing */
+    }
+    .tab-buttons button:hover {
+      background-color: #c0c0c0;
+      transform: scale(1.05);
+    }
+    .dark-mode .tab-buttons button {
+      background-color: #444;
+      color: #fff;
+    }
+    .dark-mode .tab-buttons button:hover {
+      background-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -481,63 +518,78 @@
 <div class="dropdown">
   <button class="dropbtn">☰</button>
   <div class="dropdown-content" id="dropdown-content">
-    <label><input type="checkbox" id="colCodBarra" checked> COD BARRA</label>
-    <label><input type="checkbox" id="colCodFabric" checked> COD FABRIC</label>
-    <label><input type="checkbox" id="colDun14" checked> DUN14</label>
-    <label><input type="checkbox" id="colDescricao" checked> DESCRIÇÃO</label>
-    <label><input type="checkbox" id="colUn" checked> UN</label>
-    <label><input type="checkbox" id="colMarca" checked> MARCA</label>
-    <label><input type="checkbox" id="colEstoqueReservado" checked> ESTOQUE RESERVADO</label>
-    <label><input type="checkbox" id="colDisponivel" checked> DISPONÍVEL</label>
-    <label><input type="checkbox" id="colPreco" checked> R$ PREÇO</label>
-    <label><input type="checkbox" id="colQtdeCompra" checked> QTDE COMPRA</label>
-    <label><input type="checkbox" id="colCodAuxiliar" checked> COD AUXILIAR</label>
-    <label><input type="checkbox" id="colDtInicioProm" checked> DT INICIO PROM</label>
-    <label><input type="checkbox" id="colDtFimProm" checked> DT FIM PROM</label>
-    <label><input type="checkbox" id="colPesoBruto" checked> PESO BRUTO</label>
-    <label><input type="checkbox" id="colPromocao" checked> PROMOÇÃO</label>
-    <label><input type="checkbox" id="colSuspenso" checked> SUSPENSO</label>
-    <label><input type="checkbox" id="colComAVista" checked> COM.A VISTA</label>
-    <label><input type="checkbox" id="colComAPrazo" checked> COM.A PRAZO</label>
-    <label><input type="checkbox" id="colComplemento" checked> COMPLEMENTO</label>
-    <label><input type="checkbox" id="colGrupo" checked> GRUPO</label>
-    <label><input type="checkbox" id="colSubgrupo" checked> SUBGRUPO</label>
-    <label><input type="checkbox" id="colDescricaoCompra" checked> DESCRIÇÃO PARA COMPRA</label>
-    <label><input type="checkbox" id="colTemEquiv" checked> TEM EQUIV</label>
-    <label><input type="checkbox" id="colInativo" checked> INATIVO</label>
-    <label><input type="checkbox" id="colLetra" checked> LETRA</label>
-    <label><input type="checkbox" id="colCFiscal" checked> C. FISCAL</label>
-    <label><input type="checkbox" id="colClassFiscal" checked> CLASS.FISCAL</label>
-    <label><input type="checkbox" id="colDtCadastro" checked> DT CADASTRO</label>
-    <label><input type="checkbox" id="colCategoria" checked> CATEGORIA</label>
-    <label><input type="checkbox" id="colCor" checked> COR</label>
-    <label><input type="checkbox" id="colABC" checked> ABC</label>
-    <label><input type="checkbox" id="colCodProduto" checked> COD PRODUTO</label>
-    <label><input type="checkbox" id="colCST" checked> CST</label>
-    <label><input type="checkbox" id="colEstoqueSeg" checked> ESTOQUE SEG</label>
-    <label><input type="checkbox" id="colEstoqueMin" checked> ESTOQUE MIN</label>
-    <label><input type="checkbox" id="colDtUltAlteracao" checked> DT ULT ALTERAÇÃO</label>
-    <label><input type="checkbox" id="colGrupoImpostos" checked> GRUPO IMPOSTOS</label>
-    <label><input type="checkbox" id="colTipo" checked> TIPO</label>
-    <label><input type="checkbox" id="colObservacao" checked> OBSERVAÇÃO</label>
-    <label><input type="checkbox" id="colLargura" checked> LARGURA</label>
-    <label><input type="checkbox" id="colAltura" checked> ALTURA</label>
-    <label><input type="checkbox" id="colComprimento" checked> COMPRIMENTO</label>
-    <label><input type="checkbox" id="colTamanho" checked> TAMANHO</label>
-    <label><input type="checkbox" id="colPesoLiquido" checked> PESO LIQUIDO</label>
-    <label><input type="checkbox" id="colGrupoTributo" checked> GRUPO TRIBUTO</label>
-    <label><input type="checkbox" id="colIPI" checked> IPI</label>
-    <label><input type="checkbox" id="colGarantiaDias" checked> GARANTIA (DIAS)</label>
-    <label><input type="checkbox" id="colSetor" checked> SETOR</label>
-    <label><input type="checkbox" id="colCustoTotal" checked> CUSTO TOTAL</label>
-    <label><input type="checkbox" id="colCustoMedio" checked> CUSTO MÉDIO</label>
-    <label><input type="checkbox" id="colCustoProducao" checked> CUSTO PRODUÇÃO</label>
-    <label><input type="checkbox" id="colUrlEcommerce" checked> URL ECOMMERCE</label>
-    <label><input type="checkbox" id="colInfoProduto" checked> INFORMAÇÕES DO PRODUTO</label>
-    <label><input type="checkbox" id="colProdutoSimilar" checked> PRODUTO SIMILAR</label>
-    <label><input type="checkbox" id="colCodCest" checked> COD CEST</label>
-    <label><input type="checkbox" id="colValorFrete" checked> VALOR FRETE</label>
-    <label><input type="checkbox" id="colCodBeneficio" checked> CÓD. BENEFÍCIO</label>
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button onclick="showTab('tab1')">Dados Gerais</button>
+        <button onclick="showTab('tab2')">Estoque/Compra</button>
+        <button onclick="showTab('tab3')">Financeiro/Promoção</button>
+        <button onclick="showTab('tab4')">Fiscais e Outros</button>
+      </div>
+      <div id="tab1" class="tab active">
+        <label><input type="checkbox" id="colCodBarra" checked> COD BARRA</label>
+        <label><input type="checkbox" id="colCodFabric" checked> COD FABRIC</label>
+        <label><input type="checkbox" id="colDun14" checked> DUN14</label>
+        <label><input type="checkbox" id="colDescricao" checked> DESCRIÇÃO</label>
+        <label><input type="checkbox" id="colUn" checked> UN</label>
+        <label><input type="checkbox" id="colMarca" checked> MARCA</label>
+        <label><input type="checkbox" id="colComplemento" checked> COMPLEMENTO</label>
+        <label><input type="checkbox" id="colGrupo" checked> GRUPO</label>
+        <label><input type="checkbox" id="colSubgrupo" checked> SUBGRUPO</label>
+        <label><input type="checkbox" id="colDescricaoCompra" checked> DESCRIÇÃO PARA COMPRA</label>
+        <label><input type="checkbox" id="colTemEquiv" checked> TEM EQUIV</label>
+        <label><input type="checkbox" id="colInativo" checked> INATIVO</label>
+        <label><input type="checkbox" id="colLetra" checked> LETRA</label>
+        <label><input type="checkbox" id="colCategoria" checked> CATEGORIA</label>
+        <label><input type="checkbox" id="colCor" checked> COR</label>
+        <label><input type="checkbox" id="colABC" checked> ABC</label>
+        <label><input type="checkbox" id="colCodProduto" checked> COD PRODUTO</label>
+        <label><input type="checkbox" id="colObservacao" checked> OBSERVAÇÃO</label>
+        <label><input type="checkbox" id="colUrlEcommerce" checked> URL ECOMMERCE</label>
+        <label><input type="checkbox" id="colInfoProduto" checked> INFORMAÇÕES DO PRODUTO</label>
+        <label><input type="checkbox" id="colProdutoSimilar" checked> PRODUTO SIMILAR</label>
+      </div>
+      <div id="tab2" class="tab">
+        <label><input type="checkbox" id="colEstoqueReservado" checked> ESTOQUE RESERVADO</label>
+        <label><input type="checkbox" id="colDisponivel" checked> DISPONÍVEL</label>
+        <label><input type="checkbox" id="colQtdeCompra" checked> QTDE COMPRA</label>
+        <label><input type="checkbox" id="colEstoqueSeg" checked> ESTOQUE SEG</label>
+        <label><input type="checkbox" id="colEstoqueMin" checked> ESTOQUE MIN</label>
+        <label><input type="checkbox" id="colDtUltAlteracao" checked> DT ULT ALTERAÇÃO</label>
+      </div>
+      <div id="tab3" class="tab">
+        <label><input type="checkbox" id="colPreco" checked> R$ PREÇO</label>
+        <label><input type="checkbox" id="colComAVista" checked> COM.A VISTA</label>
+        <label><input type="checkbox" id="colComAPrazo" checked> COM.A PRAZO</label>
+        <label><input type="checkbox" id="colDtInicioProm" checked> DT INICIO PROM</label>
+        <label><input type="checkbox" id="colDtFimProm" checked> DT FIM PROM</label>
+        <label><input type="checkbox" id="colPesoBruto" checked> PESO BRUTO</label>
+        <label><input type="checkbox" id="colPromocao" checked> PROMOÇÃO</label>
+        <label><input type="checkbox" id="colSuspenso" checked> SUSPENSO</label>
+        <label><input type="checkbox" id="colCustoTotal" checked> CUSTO TOTAL</label>
+        <label><input type="checkbox" id="colCustoMedio" checked> CUSTO MÉDIO</label>
+        <label><input type="checkbox" id="colCustoProducao" checked> CUSTO PRODUÇÃO</label>
+        <label><input type="checkbox" id="colValorFrete" checked> VALOR FRETE</label>
+      </div>
+      <div id="tab4" class="tab">
+        <label><input type="checkbox" id="colCFiscal" checked> C. FISCAL</label>
+        <label><input type="checkbox" id="colClassFiscal" checked> CLASS.FISCAL</label>
+        <label><input type="checkbox" id="colDtCadastro" checked> DT CADASTRO</label>
+        <label><input type="checkbox" id="colCST" checked> CST</label>
+        <label><input type="checkbox" id="colGrupoImpostos" checked> GRUPO IMPOSTOS</label>
+        <label><input type="checkbox" id="colTipo" checked> TIPO</label>
+        <label><input type="checkbox" id="colLargura" checked> LARGURA</label>
+        <label><input type="checkbox" id="colAltura" checked> ALTURA</label>
+        <label><input type="checkbox" id="colComprimento" checked> COMPRIMENTO</label>
+        <label><input type="checkbox" id="colTamanho" checked> TAMANHO</label>
+        <label><input type="checkbox" id="colPesoLiquido" checked> PESO LIQUIDO</label>
+        <label><input type="checkbox" id="colGrupoTributo" checked> GRUPO TRIBUTO</label>
+        <label><input type="checkbox" id="colIPI" checked> IPI</label>
+        <label><input type="checkbox" id="colGarantiaDias" checked> GARANTIA (DIAS)</label>
+        <label><input type="checkbox" id="colSetor" checked> SETOR</label>
+        <label><input type="checkbox" id="colCodCest" checked> COD CEST</label>
+        <label><input type="checkbox" id="colCodBeneficio" checked> CÓD. BENEFÍCIO</label>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -555,7 +607,6 @@
         <th class="colDisponivel">DISPONÍVEL</th>
         <th class="colPreco">R$ PREÇO</th>
         <th class="colQtdeCompra">QTDE COMPRA</th>
-        <th class="colCodAuxiliar">COD AUXILIAR</th>
         <th class="colDtInicioProm">DT INICIO PROM</th>
         <th class="colDtFimProm">DT FIM PROM</th>
         <th class="colPesoBruto">PESO BRUTO</th>
@@ -783,7 +834,6 @@
         <td class="colDisponivel">${produto.disponivel}</td>
         <td class="colPreco">${produto.preco}</td>
         <td class="colQtdeCompra">${produto.qtdeCompra}</td>
-        <td class="colCodAuxiliar">${produto.codAuxiliar}</td>
         <td class="colDtInicioProm">${produto.dtInicioProm}</td>
         <td class="colDtFimProm">${produto.dtFimProm}</td>
         <td class="colPesoBruto">${produto.pesoBruto}</td>
@@ -841,13 +891,10 @@
   }
 
   function atualizarVisibilidadeColunas() {
-    const colunas = [
-      'CodBarra', 'CodFabric', 'Dun14', 'Descricao', 'Un', 'Marca', 'EstoqueReservado', 'Disponivel', 'Preco', 'QtdeCompra', 'CodAuxiliar', 'DtInicioProm', 'DtFimProm', 'PesoBruto',
-      'Promocao', 'Suspenso', 'ComAVista', 'ComAPrazo', 'Complemento', 'Grupo', 'Subgrupo', 'DescricaoCompra', 'TemEquiv', 'Inativo', 'Letra', 'CFiscal', 'ClassFiscal', 'DtCadastro', 'Categoria', 'Cor', 'ABC', 'CodProduto', 'CST', 'EstoqueSeg', 'EstoqueMin', 'DtUltAlteracao', 'GrupoImpostos', 'Tipo', 'Observacao', 'Largura', 'Altura', 'Comprimento', 'Tamanho', 'PesoLiquido', 'GrupoTributo', 'IPI', 'GarantiaDias', 'Setor', 'CustoTotal', 'CustoMedio', 'CustoProducao', 'UrlEcommerce', 'InfoProduto', 'ProdutoSimilar', 'CodCest', 'ValorFrete', 'CodBeneficio'
-    ];
-    colunas.forEach(coluna => {
-      const checkbox = document.getElementById(`col${coluna}`);
-      const elementos = document.querySelectorAll(`.col${coluna}`);
+    const checkboxes = document.querySelectorAll('.dropdown-content input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      const colunaClass = checkbox.id.replace('col', 'col');
+      const elementos = document.querySelectorAll(`.${colunaClass}`);
       elementos.forEach(elemento => {
         elemento.style.display = checkbox.checked ? '' : 'none';
       });
@@ -952,7 +999,6 @@
       'DISPONÍVEL': produto.disponivel,
       'R$ PREÇO': produto.preco,
       'QTDE COMPRA': produto.qtdeCompra,
-      'COD AUXILIAR': produto.codAuxiliar,
       'DT INICIO PROM': produto.dtInicioProm,
       'DT FIM PROM': produto.dtFimProm,
       'PESO BRUTO': produto.pesoBruto,
@@ -1029,7 +1075,6 @@
           const produto = {
             codBarra: row['COD BARRA'],
             codFabric: row['COD FABRIC'],
-            codAuxiliar: row['COD AUXILIAR'],
             descricao: row['DESCRIÇÃO'],
             un: row['UN'],
             disponivel: parseInt(row['DISPONÍVEL'], 10),
@@ -1145,7 +1190,7 @@
       document.getElementById('inputCategoria').value = produto.categoria;
       document.getElementById('inputUnidade').value = produto.un;
       document.getElementById('inputPrecoDetalhes').value = produto.preco;
-      document.getElementById('inputSerialNumber').value = produto.serialNumber.toUpperCase();
+      document.getElementById('inputSerialNumber').value = produto.serialNumber ? produto.serialNumber.toUpperCase() : '';
       document.getElementById('modalDetalhes').style.display = 'block';
     } else {
       alert('Selecione um produto para alterar.');
@@ -1278,6 +1323,11 @@
 
   function fecharModalHistorico() {
     document.getElementById('modalHistorico').style.display = 'none';
+  }
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
   }
 </script>
 
