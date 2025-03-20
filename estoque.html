@@ -882,6 +882,7 @@
         <td class="colCodBeneficio">${produto.codBeneficio}</td>
       `;
       linha.onclick = (event) => selecionarProduto(produto, linha, event);
+      abrirAlteracaoAoClicarDuasVezes(produto, linha);
       tabela.appendChild(linha);
     });
 
@@ -936,6 +937,13 @@
       document.querySelectorAll('.table-container tr').forEach(linha => linha.classList.remove('selected'));
       linha.classList.add('selected');
     }
+  }
+
+  function abrirAlteracaoAoClicarDuasVezes(produto, linha) {
+    linha.ondblclick = () => {
+      produtosSelecionados = [produto];
+      alterarProduto();
+    };
   }
 
   function paginaAnterior() {
